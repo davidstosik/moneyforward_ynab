@@ -29,7 +29,7 @@ The script currently looks for environment variables for credentials:
 You can for example use [envchain](https://github.com/sorah/envchain) to manage those credentials:
 
 ```
-envchain --set --noecho mf_ynab MONEYFORWARD_USERNAME MONEYFORWARD_PASSWORD YNAB_ACCESS_TOKEN
+envchain --set --noecho mfynab MONEYFORWARD_USERNAME MONEYFORWARD_PASSWORD YNAB_ACCESS_TOKEN
 ```
 
 ## Running
@@ -37,5 +37,5 @@ envchain --set --noecho mf_ynab MONEYFORWARD_USERNAME MONEYFORWARD_PASSWORD YNAB
 To run, you'll simply need to set the environment variables. Using `envchain`, that'll look like this:
 
 ```
-envchain mf_ynab bundle exec download.rb
+envchain mfynab bundle exec bin/mfynab
 ```

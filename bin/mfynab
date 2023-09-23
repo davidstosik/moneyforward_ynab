@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require "debug"
@@ -12,11 +13,13 @@ steps = ARGV
 steps = %w(download convert csv-export ynab-import) if steps.empty?
 puts "Running steps: #{steps.join(", ")}"
 
-# FIXME use temporary folder unless in "debug" mode?
-save_path = File.join(__dir__, "in", script_time.strftime("%Y%m%d-%H%M%S"))
-latest_symlink = File.join(__dir__, "in", "latest")
+project_root = File.expand_path("..", __dir__)
 
-config = YAML.load_file(File.join(__dir__, "config.yml")).values.first
+# FIXME use temporary folder unless in "debug" mode?
+save_path = File.join(project_root, "in", script_time.strftime("%Y%m%d-%H%M%S"))
+latest_symlink = File.join(project_root, "in", "latest")
+
+config = YAML.load_file(File.join(project_root, "config.yml")).values.first
 
 config.merge!(
   "ynab_access_token" => ENV["YNAB_ACCESS_TOKEN"],
@@ -147,7 +150,7 @@ if steps.include?("convert")
   end
 
   #if steps.include?("csv-export")
-  #  output_path = File.join(__dir__, "out", script_time.strftime("%Y%m%d-%H%M%S"))
+  #  output_path = File.join(project_root, "out", script_time.strftime("%Y%m%d-%H%M%S"))
   #  FileUtils.mkdir_p(output_path)
 
   #  @mf_data.each do |account, data|
