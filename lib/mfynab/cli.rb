@@ -7,16 +7,12 @@ require "ynab"
 require "yaml"
 
 class CLI
-  def self.start(steps)
-    new(steps).start
+  def self.start(argv)
+    new(argv).start
   end
 
-  def initialize(steps)
-    @steps = if steps.empty?
-      %w(download convert csv-export ynab-import)
-    else
-      steps
-    end
+  def initialize(argv)
+    @argv = argv
   end
 
   def start
@@ -216,11 +212,23 @@ class CLI
 
   private
 
-    attr_reader :steps
+    attr_reader :argv
+
+    def config_file
+      if argv.empty?
+        raise "You need to pass a config file"
+      end
+
+      argv[0]
+    end
+
+    def steps
+      %w(download convert csv-export ynab-import)
+    end
 
     def config
       @_config ||= YAML
-        .load_file(File.join(project_root, "config.yml"))
+        .load_file(config_file)
         .values
         .first
         .merge(

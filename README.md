@@ -17,8 +17,8 @@ You'll need Ruby and Bundler.
 # Install dependencies
 bundle install
 
-# Start a config.yml file
-cp config.yml.example config.yml
+# Start a config YAML file
+cp config/example.yml config/david.yml
 ```
 
 The script currently looks for environment variables for credentials:
@@ -37,5 +37,11 @@ envchain --set --noecho mfynab MONEYFORWARD_USERNAME MONEYFORWARD_PASSWORD YNAB_
 To run, you'll simply need to set the environment variables. Using `envchain`, that'll look like this:
 
 ```
-envchain mfynab bundle exec bin/mfynab
+envchain mfynab bundle exec bin/mfynab config/david.yml
 ```
+
+## Todo
+
+- Force MoneyForward to sync all accounts before downloading data. (Can take a while.)
+- Use Thor to manage the CLI
+- Breakdown logic in parts
