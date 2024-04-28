@@ -203,7 +203,7 @@ class CLI
           begin
             ynab_api.transactions.create_transactions(budget.id, wrapper)
           rescue StandardError => e
-            puts "Error importing transactions for #{mf_account}: #{e}"
+            puts "Error importing transactions for #{budget.name}. #{e} : #{e.detail}"
           end
         end
       end
