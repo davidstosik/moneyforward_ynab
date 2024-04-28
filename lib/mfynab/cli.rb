@@ -55,7 +55,7 @@ class CLI
       @session.visit("https://moneyforward.com/")
 
       puts "Clicking login button"
-      @session.click_on("ログイン")
+      @session.first(:link, "ログイン").trigger("click")
 
       puts "Filling in username"
       @session.fill_in("メールアドレス", with: config["moneyforward_username"])
