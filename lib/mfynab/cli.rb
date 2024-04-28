@@ -65,6 +65,9 @@ class CLI
       @session.fill_in("パスワード", with: config["moneyforward_password"])
       @session.click_on("ログインする")
 
+      puts "Skipping passkey dialog"
+      @session.click_on("スキップする")
+
       puts "Waiting for login to complete"
       @session.click_on("履歴の詳細を見る")
 
