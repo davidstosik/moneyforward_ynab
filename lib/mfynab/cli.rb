@@ -185,7 +185,6 @@ class CLI
 
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
             import_id = "MFBY:v1:#{row["id"]}"
-            memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
 
             {
               account_id: account.id,
@@ -193,7 +192,7 @@ class CLI
               payee_name: row["content"][0, 100],
               date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
               cleared: "cleared",
-              memo: memo,
+              memo: row["memo"],
               import_id: import_id,
             }
           end
