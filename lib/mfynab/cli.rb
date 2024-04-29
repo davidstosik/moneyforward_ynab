@@ -39,6 +39,7 @@ class CLI
           window_size: [1200, 800],
           headless: !ENV.key?("NO_HEADLESS"),
           save_path: save_path,
+          timeout: 30,
         )
       end
 
