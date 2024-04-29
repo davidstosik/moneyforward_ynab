@@ -5,6 +5,8 @@ require "capybara/cuprite"
 require "csv"
 require "ynab"
 require "yaml"
+require "digest"
+require "base62-rb"
 
 class CLI
   def self.start(argv)
@@ -184,8 +186,8 @@ class CLI
           end
 
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
-            import_id = "MFBY:v1:#{row["id"]}"
             memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
+            import_id = shorten_id("MFBY:v1:#{row["id"]}")
 
             {
               account_id: account.id,
@@ -241,4 +243,16 @@ class CLI
     def project_root
       @_project_root ||= File.expand_path("../..", __dir__)
     end
-end
+
+    def shorten_id(id, max_length: 36)
+      # Generate a SHA-256 hash of the ID
+      hashed = Digest::SHA256.digest(id)
+
+      # Convert the binary hash to a hexadecimal string
+      hex = hashed.unpack1('H*')
+
+      # Convert the hexadecimal string to a base62 encoded string
+      base62 = Base62.encode(hex.to_i(16))
+      base62[0...max_length]
+    end
+  end

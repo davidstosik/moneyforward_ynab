@@ -3,6 +3,7 @@ GEM
   specs:
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
+    base62-rb (0.3.1)
     capybara (3.39.2)
       addressable
       matrix
@@ -34,6 +35,8 @@ GEM
     matrix (0.4.2)
     mini_mime (1.1.5)
     nokogiri (1.15.4-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.15.4-x86_64-darwin)
       racc (~> 1.4)
     psych (5.1.0)
       stringio
@@ -68,8 +71,10 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  x86_64-darwin-23
 
 DEPENDENCIES
+  base62-rb
   capybara (~> 3.39)
   cuprite (~> 0.14.3)
   debug (~> 1.8)
