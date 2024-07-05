@@ -33,7 +33,9 @@ GEM
       reline (>= 0.3.8)
     matrix (0.4.2)
     mini_mime (1.1.5)
-    nokogiri (1.15.4-arm64-darwin)
+    mini_portile2 (2.8.7)
+    nokogiri (1.15.4)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     psych (5.1.0)
       stringio
@@ -68,13 +70,14 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
 
 DEPENDENCIES
   capybara (~> 3.39)
   cuprite (~> 0.14.3)
   debug (~> 1.8)
   selenium-webdriver (~> 4.12)
-  ynab (~> 2.1)
+  ynab
 
 BUNDLED WITH
    2.4.6
