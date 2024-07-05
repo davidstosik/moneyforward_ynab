@@ -193,7 +193,7 @@ class CLI
           next unless @mf_data.key?(mapping["money_forward_name"])
 
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
-            import_id = "MFBY:v1:#{row["id"]}"
+            import_id = import_id(row)
             memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
 
             {
@@ -243,6 +243,27 @@ class CLI
       # https://github.com/ynab/ynab-sdk-ruby/issues/77
     end
 
+    # ⚠️ Be very careful when changing this method!
+    # A different import_id will cause the script to create duplicate transactions.
+    def import_id(row)
+      max_length = 36
+
+      # Uniquely identify transactions to avoid conflicts with other potential import scripts
+      prefix = "MFYv1:"
+
+      id = row["id"]
+
+      # FIXME this #import_id method should be defined on a Transaction object
+      # to avoid having to convert dates multiple times.
+      date = Date.strptime(row["date"], "%Y/%m/%d")
+
+      if date >= import_id_cutoff && prefix.length + id.length > max_length
+        id = Digest::SHA256.hexdigest(id)[0, max_length - prefix.size]
+      end
+
+      "#{prefix}#{id}"[0, max_length]
+    end
+
     def config_file
       if argv.empty?
         raise "You need to pass a config file"
@@ -255,9 +276,17 @@ class CLI
       %w(download convert csv-export ynab-import)
     end
 
+    def import_id_cutoff
+      if config.key?("import_id_cutoff")
+        config["import_id_cutoff"]
+      else
+        raise "MFYNAB's import ids recently changed. You need to set an import_id_cutoff date in your config file, that will be used to determine whether to use the new or old import id format."
+      end
+    end
+
     def config
       @_config ||= YAML
-        .load_file(config_file)
+        .load_file(config_file, permitted_classes: [Date])
         .values
         .first
         .merge(
