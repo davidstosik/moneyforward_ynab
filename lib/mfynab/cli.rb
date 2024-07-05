@@ -137,7 +137,7 @@ class CLI
         CSV.foreach(
           file,
           headers: true,
-          encoding: "Shift_JIS:UTF-8",
+          encoding: "SJIS:UTF-8",
           converters: :all,
           header_converters: csv_header_converters,
         ) do |row|
