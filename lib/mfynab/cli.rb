@@ -194,7 +194,7 @@ class CLI
               payee_name: row["content"][0, 100],
               date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
               cleared: "cleared",
-              memo: memo,
+              memo: generate_memo_for(row),
               import_id: import_id,
             }
           end
@@ -214,6 +214,26 @@ class CLI
   private
 
     attr_reader :argv
+
+    def generate_memo_for(row)
+      category = row
+        .values_at("category", "subcategory")
+        .delete_if { _1.nil? || _1.empty? || _1 == "未分類" }
+        .join("/")
+
+      memo_parts = [
+        row["memo"], # prioritize memo if present, since it's user input
+        row["content"],
+        category,
+      ]
+
+      memo_parts
+        .delete_if { _1.nil? || _1.empty? }
+        .join(" - ")
+        .slice(0, 200) # YNAB's API currently limits memo to 200 characters,
+      # even though YNAB itself allows longer memos. See:
+      # https://github.com/ynab/ynab-sdk-ruby/issues/77
+    end
 
     def config_file
       if argv.empty?
