@@ -189,6 +189,9 @@ class CLI
             next
           end
 
+          # Skip if no transactions were found for this account
+          next unless @mf_data.key?(mapping["money_forward_name"])
+
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
             import_id = "MFBY:v1:#{row["id"]}"
             memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
