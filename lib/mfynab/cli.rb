@@ -53,10 +53,10 @@ class CLI
       })
 
       puts "Visiting login page"
-      @session.visit("https://moneyforward.com/")
+      @session.visit("https://moneyforward.com/sign_in")
 
-      puts "Clicking login button"
-      @session.click_on("ログイン")
+      #puts "Clicking login button"
+      #@session.first(:link_or_button, "ログイン").click
 
       puts "Filling in username"
       @session.fill_in("メールアドレス", with: config["moneyforward_username"])
