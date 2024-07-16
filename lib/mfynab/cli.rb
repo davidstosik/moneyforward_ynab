@@ -193,7 +193,6 @@ class CLI
           next unless @mf_data.key?(mapping["money_forward_name"])
 
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
-            import_id = import_id(row)
             memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
 
             {
@@ -203,7 +202,7 @@ class CLI
               date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
               cleared: "cleared",
               memo: generate_memo_for(row),
-              import_id: import_id,
+              import_id: generate_import_id_for(row),
             }
           end
 
@@ -244,24 +243,36 @@ class CLI
     end
 
     # ⚠️ Be very careful when changing this method!
-    # A different import_id will cause the script to create duplicate transactions.
-    def import_id(row)
+    #
+    # A different import_id can cause MFYNAB to create duplicate transactions.
+    #
+    # import_id is scoped to an account in a budget, this means that:
+    # - if 2 transactions have the same import_id, but are in different
+    #   accounts then they will be imported as 2 unrelated transactions.
+    # - if 2 transactions in the same account have the same import_id,
+    #   then the second transaction will be ignored,
+    #   even if it has a different date and/or amount.
+    # Note that it might be useful for the import_id to stay consistent even if
+    # the transaction amount changes, since a transaction that originally
+    # appeared as a low-amount authorization might be updated to its final
+    # amount later.
+    # (I don't know what that means for cleared and reconciled transactions...)
+    def generate_import_id_for(row)
       max_length = 36
 
       # Uniquely identify transactions to avoid conflicts with other potential import scripts
-      prefix = "MFYv1:"
+      # Note: I don't remember why I named it MFBY (why not MFYNAB or MFY?),
+      # but changing it now would require a lot of work in preventing import
+      # duplicates due to inconsistent import_id.
+      prefix = "MFBY:v1:"
 
       id = row["id"]
 
-      # FIXME this #import_id method should be defined on a Transaction object
-      # to avoid having to convert dates multiple times.
-      date = Date.strptime(row["date"], "%Y/%m/%d")
-
-      if date >= import_id_cutoff && prefix.length + id.length > max_length
+      if prefix.length + id.length > max_length
         id = Digest::SHA256.hexdigest(id)[0, max_length - prefix.size]
       end
 
-      "#{prefix}#{id}"[0, max_length]
+      prefix + id
     end
 
     def config_file
@@ -276,17 +287,9 @@ class CLI
       %w(download convert csv-export ynab-import)
     end
 
-    def import_id_cutoff
-      if config.key?("import_id_cutoff")
-        config["import_id_cutoff"]
-      else
-        raise "MFYNAB's import ids recently changed. You need to set an import_id_cutoff date in your config file, that will be used to determine whether to use the new or old import id format."
-      end
-    end
-
     def config
       @_config ||= YAML
-        .load_file(config_file, permitted_classes: [Date])
+        .load_file(config_file)
         .values
         .first
         .merge(

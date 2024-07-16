@@ -1,6 +1,5 @@
 David:
   ynab_budget: "My budget"
-  import_id_cutoff: 2020-01-01
   accounts:
     - money_forward_name: "楽天銀行"
       ynab_name: "Rakuten Bank"
