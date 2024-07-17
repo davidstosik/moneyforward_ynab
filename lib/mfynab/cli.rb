@@ -18,36 +18,30 @@ class CLI
   def start
     script_time = Time.now
 
-    puts "Running steps: #{steps.join(", ")}"
+    puts "Running..."
 
     # FIXME use temporary folder unless in "debug" mode?
     save_path = File.join(project_root, "in", script_time.strftime("%Y%m%d-%H%M%S"))
     latest_symlink = File.join(project_root, "in", "latest")
     FileUtils.ln_sf(save_path, latest_symlink)
 
-    if steps.include?("download")
-      MFYNAB::MoneyForwardDownloader
-        .new(
-          username: config["moneyforward_username"],
-          password: config["moneyforward_password"],
-          to: save_path,
-        )
-      .run
-    end
+    MFYNAB::MoneyForwardDownloader
+      .new(
+        username: config["moneyforward_username"],
+        password: config["moneyforward_password"],
+        to: save_path,
+      )
+    .run
 
-    if steps.include?("convert")
-      data = MFYNAB::MoneyForwardData.new
-      data.read_all_csv(save_path)
-      @mf_data = data.to_h
+    data = MFYNAB::MoneyForwardData.new
+    data.read_all_csv(save_path)
+    @mf_data = data.to_h
 
-      if steps.include?("ynab-import")
-        MFYNAB::YnabTransactionImporter.new(
-          config["ynab_access_token"],
-          config["ynab_budget"],
-          config["accounts"],
-        ).run(@mf_data)
-      end
-    end
+    MFYNAB::YnabTransactionImporter.new(
+      config["ynab_access_token"],
+      config["ynab_budget"],
+      config["accounts"],
+    ).run(@mf_data)
   end
 
   private
@@ -60,10 +54,6 @@ class CLI
       end
 
       argv[0]
-    end
-
-    def steps
-      %w(download convert csv-export ynab-import)
     end
 
     def config
