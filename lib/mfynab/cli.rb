@@ -193,8 +193,6 @@ class CLI
           next unless @mf_data.key?(mapping["money_forward_name"])
 
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
-            memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
-
             {
               account_id: account.id,
               amount: row["amount"] * 1_000,
