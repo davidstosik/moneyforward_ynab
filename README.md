@@ -44,7 +44,7 @@ To run, you'll simply need to set the environment variables.
 Using `envchain`, that'll look like this:
 
 ```sh
-envchain mfynab bundle exec bin/mfynab config/david.yml
+envchain mfynab bin/mfynab sync --config=config/david.yml
 ```
 
 ## Todo
