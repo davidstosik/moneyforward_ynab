@@ -258,18 +258,21 @@ class CLI
     # amount later.
     # (I don't know what that means for cleared and reconciled transactions...)
     def generate_import_id_for(row)
-      max_length = 36
-
       # Uniquely identify transactions to avoid conflicts with other potential import scripts
       # Note: I don't remember why I named it MFBY (why not MFYNAB or MFY?),
       # but changing it now would require a lot of work in preventing import
       # duplicates due to inconsistent import_id.
       prefix = "MFBY:v1:"
 
+      max_length = 36     # YNAB API limit
+      id_max_length = 28  # this leaves 8 characters for the prefix
+
       id = row["id"]
 
+      # Only hash if the ID would exceed YNAB's limit.
+      # This improves backwards compatibility with old import_ids.
       if prefix.length + id.length > max_length
-        id = Digest::SHA256.hexdigest(id)[0, max_length - prefix.size]
+        id = Digest::SHA256.hexdigest(id)[0, id_max_length]
       end
 
       prefix + id
