@@ -193,7 +193,6 @@ class CLI
           next unless @mf_data.key?(mapping["money_forward_name"])
 
           transactions = @mf_data[mapping["money_forward_name"]].map do |row|
-            import_id = "MFBY:v1:#{row["id"]}"
             memo = "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}"
 
             {
@@ -203,7 +202,7 @@ class CLI
               date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
               cleared: "cleared",
               memo: generate_memo_for(row),
-              import_id: import_id,
+              import_id: generate_import_id_for(row),
             }
           end
 
@@ -241,6 +240,39 @@ class CLI
         .slice(0, 200) # YNAB's API currently limits memo to 200 characters,
       # even though YNAB itself allows longer memos. See:
       # https://github.com/ynab/ynab-sdk-ruby/issues/77
+    end
+
+    # ⚠️ Be very careful when changing this method!
+    #
+    # A different import_id can cause MFYNAB to create duplicate transactions.
+    #
+    # import_id is scoped to an account in a budget, this means that:
+    # - if 2 transactions have the same import_id, but are in different
+    #   accounts then they will be imported as 2 unrelated transactions.
+    # - if 2 transactions in the same account have the same import_id,
+    #   then the second transaction will be ignored,
+    #   even if it has a different date and/or amount.
+    # Note that it might be useful for the import_id to stay consistent even if
+    # the transaction amount changes, since a transaction that originally
+    # appeared as a low-amount authorization might be updated to its final
+    # amount later.
+    # (I don't know what that means for cleared and reconciled transactions...)
+    def generate_import_id_for(row)
+      max_length = 36
+
+      # Uniquely identify transactions to avoid conflicts with other potential import scripts
+      # Note: I don't remember why I named it MFBY (why not MFYNAB or MFY?),
+      # but changing it now would require a lot of work in preventing import
+      # duplicates due to inconsistent import_id.
+      prefix = "MFBY:v1:"
+
+      id = row["id"]
+
+      if prefix.length + id.length > max_length
+        id = Digest::SHA256.hexdigest(id)[0, max_length - prefix.size]
+      end
+
+      prefix + id
     end
 
     def config_file
