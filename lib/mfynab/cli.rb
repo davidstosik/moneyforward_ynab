@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "debug"
-require "csv"
 require "ynab"
 require "yaml"
 require "mfynab/money_forward_downloader"
+require "mfynab/money_forward_data"
 
 class CLI
   def self.start(argv)
@@ -36,61 +36,9 @@ class CLI
     end
 
     if steps.include?("convert")
-      csv_header_converters = lambda do |header|
-        # Translate following headers from Japanese to English
-        # 計算対象、日付、内容、金額（円）、保有金融機関、大項目、中項目、メモ、振替、ID
-        case header
-        when "計算対象" then "include"
-        when "日付" then "date"
-        when "内容" then "content"
-        when "金額（円）" then "amount"
-        when "保有金融機関" then "account"
-        when "大項目" then "category"
-        when "中項目" then "subcategory"
-        when "メモ" then "memo"
-        when "ID" then "id"
-        else header
-        end
-      end
-
-      @mf_data = {}
-
-      Dir[File.join(latest_symlink, "*.csv")].each do |file|
-        puts "Reading #{file}"
-        CSV.foreach(
-          file,
-          headers: true,
-          encoding: "SJIS:UTF-8",
-          converters: :all,
-          header_converters: csv_header_converters,
-        ) do |row|
-          @mf_data[row["account"]] ||= []
-          @mf_data[row["account"]] << row
-        end
-      end
-
-      #if steps.include?("csv-export")
-      #  output_path = File.join(project_root, "out", script_time.strftime("%Y%m%d-%H%M%S"))
-      #  FileUtils.mkdir_p(output_path)
-
-      #  @mf_data.each do |account, data|
-      #    CSV.open(
-      #      File.join(output_path, "#{account}.csv"),
-      #      "wb",
-      #      headers: %w[Date Payee Memo Amount],
-      #      write_headers: true,
-      #    ) do |csv|
-      #      data.each do |row|
-      #        csv << [
-      #          Date.parse(row["date"]).strftime("%Y/%m/%d"),
-      #          row["content"],
-      #          "#{row["category"]}/#{row["subcategory"]} - #{row["content"]} - #{row["memo"]}",
-      #          row["amount"],
-      #        ]
-      #      end
-      #    end
-      #  end
-      #end
+      data = MFYNAB::MoneyForwardData.new
+      data.read_all_csv(save_path)
+      @mf_data = data.to_h
 
       if steps.include?("ynab-import")
         ynab_budget = config["ynab_budget"]
