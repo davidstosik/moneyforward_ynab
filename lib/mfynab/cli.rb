@@ -7,6 +7,10 @@ require "ynab"
 require "yaml"
 
 class CLI
+  # See https://github.com/ynab/ynab-sdk-ruby/issues/77
+  YNAB_MEMO_MAX_SIZE = 500
+  YNAB_PAYEE_MAX_SIZE = 200
+
   def self.start(argv)
     new(argv).start
   end
@@ -198,7 +202,7 @@ class CLI
             {
               account_id: account.id,
               amount: row["amount"] * 1_000,
-              payee_name: row["content"][0, 100],
+              payee_name: row["content"][0, YNAB_PAYEE_MAX_SIZE],
               date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
               cleared: "cleared",
               memo: generate_memo_for(row),
@@ -237,9 +241,7 @@ class CLI
       memo_parts
         .delete_if { _1.nil? || _1.empty? }
         .join(" - ")
-        .slice(0, 200) # YNAB's API currently limits memo to 200 characters,
-      # even though YNAB itself allows longer memos. See:
-      # https://github.com/ynab/ynab-sdk-ruby/issues/77
+        .slice(0, YNAB_MEMO_MAX_SIZE)
     end
 
     # ⚠️ Be very careful when changing this method!
