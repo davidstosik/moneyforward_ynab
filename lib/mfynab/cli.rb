@@ -10,6 +10,7 @@ class CLI
   # See https://github.com/ynab/ynab-sdk-ruby/issues/77
   YNAB_MEMO_MAX_SIZE = 500
   YNAB_PAYEE_MAX_SIZE = 200
+  YNAB_IMPORT_ID_MAX_LENGTH = 36
 
   def self.start(argv)
     new(argv).start
@@ -266,15 +267,14 @@ class CLI
       # duplicates due to inconsistent import_id.
       prefix = "MFBY:v1:"
 
-      max_length = 36     # YNAB API limit
-      id_max_length = 28  # this leaves 8 characters for the prefix
+      digest_max_length = 28  # this leaves 8 characters for the prefix
 
       id = row["id"]
 
       # Only hash if the ID would exceed YNAB's limit.
       # This improves backwards compatibility with old import_ids.
-      if prefix.length + id.length > max_length
-        id = Digest::SHA256.hexdigest(id)[0, id_max_length]
+      if prefix.length + id.length > YNAB_IMPORT_ID_MAX_LENGTH
+        id = Digest::SHA256.hexdigest(id)[0, digest_max_length]
       end
 
       prefix + id
