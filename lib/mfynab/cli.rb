@@ -16,26 +16,21 @@ class CLI
   end
 
   def start
-    script_time = Time.now
-
     puts "Running..."
 
-    # FIXME use temporary folder unless in "debug" mode?
-    save_path = File.join(project_root, "in", script_time.strftime("%Y%m%d-%H%M%S"))
-    latest_symlink = File.join(project_root, "in", "latest")
-    FileUtils.ln_sf(save_path, latest_symlink)
+    Dir.mktmpdir("mfynab") do |save_path|
+      MFYNAB::MoneyForwardDownloader
+        .new(
+          username: config["moneyforward_username"],
+          password: config["moneyforward_password"],
+          to: save_path,
+        )
+        .run
 
-    MFYNAB::MoneyForwardDownloader
-      .new(
-        username: config["moneyforward_username"],
-        password: config["moneyforward_password"],
-        to: save_path,
-      )
-    .run
-
-    data = MFYNAB::MoneyForwardData.new
-    data.read_all_csv(save_path)
-    @mf_data = data.to_h
+      data = MFYNAB::MoneyForwardData.new
+      data.read_all_csv(save_path)
+      @mf_data = data.to_h
+    end
 
     MFYNAB::YnabTransactionImporter.new(
       config["ynab_access_token"],
@@ -66,9 +61,5 @@ class CLI
           "moneyforward_username" =>ENV["MONEYFORWARD_USERNAME"],
           "moneyforward_password" => ENV["MONEYFORWARD_PASSWORD"],
         )
-    end
-
-    def project_root
-      @_project_root ||= File.expand_path("../..", __dir__)
     end
 end
