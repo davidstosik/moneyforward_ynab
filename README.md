@@ -51,4 +51,3 @@ envchain mfynab bundle exec bin/mfynab config/david.yml
 
 - Force MoneyForward to sync all accounts before downloading data. (Can take a while.)
 - Use Thor to manage the CLI
-- Break down logic in parts
