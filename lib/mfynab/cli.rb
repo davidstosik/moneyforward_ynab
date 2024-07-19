@@ -7,6 +7,11 @@ require "ynab"
 require "yaml"
 
 class CLI
+  # See https://github.com/ynab/ynab-sdk-ruby/issues/77
+  YNAB_MEMO_MAX_SIZE = 500
+  YNAB_PAYEE_MAX_SIZE = 200
+  YNAB_IMPORT_ID_MAX_LENGTH = 36
+
   def self.start(argv)
     new(argv).start
   end
@@ -196,7 +201,7 @@ class CLI
             {
               account_id: account.id,
               amount: row["amount"] * 1_000,
-              payee_name: row["content"][0, 100],
+              payee_name: row["content"][0, YNAB_PAYEE_MAX_SIZE],
               date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
               cleared: "cleared",
               memo: generate_memo_for(row),
@@ -235,9 +240,7 @@ class CLI
       memo_parts
         .delete_if { _1.nil? || _1.empty? }
         .join(" - ")
-        .slice(0, 200) # YNAB's API currently limits memo to 200 characters,
-      # even though YNAB itself allows longer memos. See:
-      # https://github.com/ynab/ynab-sdk-ruby/issues/77
+        .slice(0, YNAB_MEMO_MAX_SIZE)
     end
 
     # ⚠️ Be very careful when changing this method!
@@ -262,15 +265,14 @@ class CLI
       # duplicates due to inconsistent import_id.
       prefix = "MFBY:v1:"
 
-      max_length = 36     # YNAB API limit
-      id_max_length = 28  # this leaves 8 characters for the prefix
+      digest_max_length = 28  # this leaves 8 characters for the prefix
 
       id = row["id"]
 
       # Only hash if the ID would exceed YNAB's limit.
       # This improves backwards compatibility with old import_ids.
-      if prefix.length + id.length > max_length
-        id = Digest::SHA256.hexdigest(id)[0, id_max_length]
+      if prefix.length + id.length > YNAB_IMPORT_ID_MAX_LENGTH
+        id = Digest::SHA256.hexdigest(id)[0, digest_max_length]
       end
 
       prefix + id
