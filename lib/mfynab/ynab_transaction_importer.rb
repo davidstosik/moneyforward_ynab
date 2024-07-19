@@ -11,11 +11,6 @@ module MFYNAB
     end
 
     def run(mf_transactions)
-      ynab_api = YNAB::API.new(api_key)
-
-      budget = ynab_api.budgets.get_budgets.data.budgets.find { _1.name == budget_name }
-      accounts = ynab_api.accounts.get_accounts(budget.id).data.accounts
-
       # FIXME instead of iterating over all configured accounts,
       # we should iterate over all accounts that have transactions:
       #     mf_transactions.map do |mf_account, mf_account_transactions|
@@ -45,10 +40,8 @@ module MFYNAB
           }
         end
 
-        wrapper = YNAB::PostTransactionsWrapper.new(transactions:)
-
         begin
-          ynab_api.transactions.create_transactions(budget.id, wrapper)
+          ynab_transactions_api.create_transaction(budget.id, transactions: transactions)
         rescue StandardError => e
           puts "Error importing transactions for #{budget.name}. #{e} : #{e.detail}"
         end
@@ -113,6 +106,38 @@ module MFYNAB
       end
 
       prefix + id
+    end
+
+    def ynab_transactions_api
+      @_ynab_transactions_api ||= YNAB::TransactionsApi.new(ynab_api_client)
+    end
+
+    def accounts
+      @_accounts ||= YNAB::AccountsApi
+      .new(ynab_api_client)
+      .get_accounts(budget.id)
+      .data
+      .accounts
+    end
+
+    def budget
+      @_budget ||= YNAB::BudgetsApi
+        .new(ynab_api_client)
+        .get_budgets
+        .data
+        .budgets
+        .find { _1.name == budget_name }
+    end
+
+    def ynab_api_client
+      @_ynab_api_client ||= YNAB::ApiClient.new(ynab_api_config)
+    end
+
+    def ynab_api_config
+      @_ynab_api_config = YNAB::Configuration.new.tap do |config|
+        config.access_token = api_key
+        config.debugging = false
+      end
     end
   end
 end
