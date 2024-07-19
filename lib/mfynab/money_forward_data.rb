@@ -24,7 +24,7 @@ module MFYNAB
         header_converters: csv_header_converters,
       ) do |row|
         transactions[row["account"]] ||= []
-        transactions[row["account"]] << row
+        transactions[row["account"]] << row.to_h
       end
     end
 
@@ -38,8 +38,6 @@ module MFYNAB
 
     def csv_header_converters
       lambda do |header|
-        # Translate following headers from Japanese to English
-        # 計算対象、日付、内容、金額（円）、保有金融機関、大項目、中項目、メモ、振替、ID
         case header
         when "計算対象" then "include"
         when "日付" then "date"
