@@ -22,7 +22,7 @@ module MFYNAB
           path: tmpdir,
         )
 
-        expected_files = dates.map { "#{_1.strftime("%Y-%m-%d")}.csv" }
+        expected_files = dates.map { "#{_1.strftime("%Y-%m")}.csv" }
         produced_files = Dir[File.join(tmpdir, "*.csv")].map { File.basename(_1) }
         assert_equal expected_files.sort, produced_files.sort
       end

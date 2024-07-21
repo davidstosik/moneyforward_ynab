@@ -53,7 +53,7 @@ module MFYNAB
             }
           )
 
-          date_string = month.strftime("%Y-%m-%d")
+          date_string = month.strftime("%Y-%m")
 
           puts "Downloading CSV for #{date_string}"
 
