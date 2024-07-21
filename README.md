@@ -44,11 +44,29 @@ To run, you'll simply need to set the environment variables.
 Using `envchain`, that'll look like this:
 
 ```sh
-envchain mfynab bundle exec bin/mfynab config/david.yml
+envchain mfynab bin/mfynab config/david.yml
 ```
+
+## Development
+
+After checking out the repo, run `bundle install` to install dependencies. Then, run `bin/rake test` to run the tests.
 
 ## Todo
 
 - Force MoneyForward to sync all accounts before downloading data. (Can take a while.)
-- Use Thor to manage the CLI
-- Break down logic in parts
+- Use Thor to manage the CLI. (And/or TTY?)
+- Write more tests.
+- Setup CI.
+- Implement `Transaction` model to extract some logic from existing classes.
+- Turn into a gem and publish.
+- Replace Capybara?
+- Implement CLI to setup config.
+  - Save/update session_id so browser is only needed once.
+- Improve logging/output.
+  - Debug logging.
+  - Prevent logging to STDOUT when running tests.
+- Get rid of `envchain`?
+  - Store config/credentials in `~/.config/`?
+  - Encrypt config, use Keyring or other OS-level secure storage?
+    - Possible to write a gem with native extension based on <https://github.com/hrantzsch/keychain>?
+  - Open browser, ask user to log into MoneyForward and store cookie? (Does it expire though?)
