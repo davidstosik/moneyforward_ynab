@@ -2,7 +2,7 @@
 
 require "debug"
 require "yaml"
-require "mfynab/money_forward_downloader"
+require "mfynab/money_forward"
 require "mfynab/money_forward_data"
 require "mfynab/ynab_transaction_importer"
 
@@ -18,14 +18,17 @@ class CLI
   def start
     puts "Running..."
 
+    money_forward = MFYNAB::MoneyForward.new
+    session_id = money_forward.get_session_id(
+      username: config["moneyforward_username"],
+      password: config["moneyforward_password"],
+    )
+
     Dir.mktmpdir("mfynab") do |save_path|
-      MFYNAB::MoneyForwardDownloader
-        .new(
-          username: config["moneyforward_username"],
-          password: config["moneyforward_password"],
-          to: save_path,
-        )
-        .run
+      money_forward.download_csv(
+        session_id: session_id,
+        path: save_path,
+      )
 
       data = MFYNAB::MoneyForwardData.new
       data.read_all_csv(save_path)

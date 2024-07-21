@@ -19,7 +19,6 @@ module MFYNAB
       CSV.foreach(
         csv_file,
         headers: true,
-        encoding: "SJIS:UTF-8",
         converters: :all,
         header_converters: csv_header_converters,
       ) do |row|
