@@ -41,6 +41,7 @@ module MFYNAB
         end
 
         begin
+          puts "Importing #{transactions.size} transactions for #{account.name}"
           ynab_transactions_api.create_transaction(budget.id, transactions: transactions)
         rescue StandardError => e
           puts "Error importing transactions for #{budget.name}. #{e} : #{e.detail}"
