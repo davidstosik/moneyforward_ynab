@@ -58,7 +58,6 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Write more tests.
 - Implement `Transaction` model to extract some logic from existing classes.
 - Turn into a gem and publish.
-- Replace Capybara?
 - Implement CLI to setup config.
   - Save/update session_id so browser is only needed once.
 - Improve logging/output.

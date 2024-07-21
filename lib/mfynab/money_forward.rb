@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require "capybara/cuprite"
+require "ferrum"
 
 module MFYNAB
   class MoneyForward
-    CAPYBARA_DRIVER_NAME = :cuprite_mfynab
     DEFAULT_BASE_URL = "https://moneyforward.com"
     SIGNIN_PATH = "/sign_in"
     CSV_PATH = "/cf/csv"
@@ -16,24 +15,13 @@ module MFYNAB
     end
 
     def get_session_id(username:, password:)
-      with_capypara_session do |session|
-        session.driver.add_headers({
-          "Accept-Language" => "en-US,en;q=0.2,ja;q=0.8,fr;q=0.7,ja-JP;q=0.6",
-          "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
-        })
+      with_ferrum do |browser|
+        browser.goto("#{base_url}#{SIGNIN_PATH}")
+        browser.at_css("input[name='mfid_user[email]']").focus.type(username)
+        browser.at_css("input[name='mfid_user[password]']").focus.type(password)
+        browser.at_css("button#submitto").click
 
-        puts "Visiting login page"
-        session.visit("#{base_url}#{SIGNIN_PATH}")
-
-        puts "Filling in username"
-        session.fill_in("メールアドレス", with: username)
-        session.click_on("ログインする")
-
-        puts "Filling in password"
-        session.fill_in("パスワード", with: password)
-        session.click_on("ログインする")
-
-        return session.driver.cookies[SESSION_COOKIE_NAME].value
+        browser.cookies[SESSION_COOKIE_NAME].value
       end
     end
 
@@ -77,38 +65,19 @@ module MFYNAB
 
     attr_reader :base_url
 
-    def with_capypara_session(&block)
-      # old_threadsafe = Capybara.threadsafe
-      Capybara.threadsafe = true
-
-      register_capybara_driver
-
-      session = Capybara::Session.new(CAPYBARA_DRIVER_NAME) do |config|
-        config.default_max_wait_time = 10
-      end
-
-      yield session
+    def with_ferrum(&block)
+      browser = Ferrum::Browser.new(timeout: 30, headless: !ENV.key?("NO_HEADLESS"))
+      browser.headers.add({
+        "Accept-Language" => "en-US,en",
+        "User-Agent" => USER_AGENT,
+      })
+      yield browser
+    rescue => e
+      browser.screenshot(path: "screenshot.png")
+      puts "An error occurred and a screenshot was saved to ./screenshot.png"
+      raise
     ensure
-      session&.quit if defined?(session)
-      # FIXME:
-      #  Capybara.threadsafe setting cannot be changed once a session is created
-      #  I'm not comfortable setting Capybara.threadsafe in this method,
-      #  especially if I cannot restore its original value.
-      #  Is using Capybara even the right thing?
-      # Capybara.threadsafe = old_threadsafe
-    end
-
-    def register_capybara_driver
-      return if Capybara.drivers[CAPYBARA_DRIVER_NAME]
-
-      Capybara.register_driver(CAPYBARA_DRIVER_NAME) do |app|
-        Capybara::Cuprite::Driver.new(
-          app,
-          window_size: [1200, 800],
-          headless: !ENV.key?("NO_HEADLESS"),
-          timeout: 30,
-        )
-      end
+      browser&.quit
     end
   end
 end
