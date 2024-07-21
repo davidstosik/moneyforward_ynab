@@ -61,6 +61,7 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Turn into a gem and publish.
 - Replace Capybara?
 - Implement CLI to setup config.
+  - Save/update session_id so browser is only needed once.
 - Improve logging/output.
   - Debug logging.
   - Prevent logging to STDOUT when running tests.
