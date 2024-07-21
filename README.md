@@ -47,7 +47,22 @@ Using `envchain`, that'll look like this:
 envchain mfynab bin/mfynab config/david.yml
 ```
 
+## Development
+
+After checking out the repo, run `bundle install` to install dependencies. Then, run `bin/rake test` to run the tests.
+
 ## Todo
 
 - Force MoneyForward to sync all accounts before downloading data. (Can take a while.)
-- Use Thor to manage the CLI
+- Use Thor to manage the CLI. (And/or TTY?)
+- Write more tests.
+- Setup CI.
+- Implement `Transaction` model to extract some logic from existing classes.
+- Turn into a gem and publish.
+- Replace Capybara?
+- Implement CLI to setup config.
+- Get rid of `envchain`?
+  - Store config/credentials in `~/.config/`?
+  - Encrypt config, use Keyring or other OS-level secure storage?
+    - Possible to write a gem with native extension based on <https://github.com/hrantzsch/keychain>?
+  - Open browser, ask user to log into MoneyForward and store cookie? (Does it expire though?)
