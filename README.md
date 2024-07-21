@@ -61,6 +61,9 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Turn into a gem and publish.
 - Replace Capybara?
 - Implement CLI to setup config.
+- Improve logging/output.
+  - Debug logging.
+  - Prevent logging to STDOUT when running tests.
 - Get rid of `envchain`?
   - Store config/credentials in `~/.config/`?
   - Encrypt config, use Keyring or other OS-level secure storage?
