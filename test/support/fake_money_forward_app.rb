@@ -28,7 +28,6 @@ module MFYNAB
     end
 
     get "/" do
-      #require "debug"; debugger
       if request.cookies["_moneybook_session"] == "dummy_session_id"
         "Logged in"
       else
