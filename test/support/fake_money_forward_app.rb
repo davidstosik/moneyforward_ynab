@@ -3,7 +3,7 @@
 require "sinatra/base"
 
 module MFYNAB
-  class FakeMoneyforwardApp < Sinatra::Base
+  class FakeMoneyForwardApp < Sinatra::Base
     set :logging, false
 
     get "/sign_in" do

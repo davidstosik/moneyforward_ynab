@@ -3,12 +3,12 @@
 require "test_helper"
 require "csv"
 require "mfynab/money_forward"
-require "support/fake_moneyforward_app"
+require "support/fake_money_forward_app"
 
 module MFYNAB
   class MoneyForwardTest < Minitest::Test
     def test_get_session_id_raises_if_wrong_credentials
-      while_running_fake_moneyforward_app do |host, port|
+      while_running_fake_money_forward_app do |host, port|
         money_forward = MoneyForward.new(base_url: "http://#{host}:#{port}")
 
         assert_raises(RuntimeError, "Login failed") do
@@ -21,7 +21,7 @@ module MFYNAB
     end
 
     def test_get_session_id_happy_path
-      while_running_fake_moneyforward_app do |host, port|
+      while_running_fake_money_forward_app do |host, port|
         session_id = MoneyForward.new(
           base_url: "http://#{host}:#{port}",
         ).get_session_id(
@@ -102,7 +102,7 @@ module MFYNAB
       today - today.day + 1
     end
 
-    def while_running_fake_moneyforward_app
+    def while_running_fake_money_forward_app
       WebMock.disable_net_connect!(allow_localhost: true)
       host = "127.0.0.1"
       port = 4567
@@ -111,7 +111,7 @@ module MFYNAB
         require "rackup/handler/webrick"
 
         Rackup::Handler::WEBrick.run(
-          FakeMoneyforwardApp,
+          FakeMoneyForwardApp,
           Host: host,
           Port: port,
           AccessLog: [],
