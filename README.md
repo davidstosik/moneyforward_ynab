@@ -63,6 +63,7 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Improve logging/output.
   - Debug logging.
   - Prevent logging to STDOUT when running tests.
+- Make the 3 months period configurable
 - Get rid of `envchain`?
   - Store config/credentials in `~/.config/`?
   - Encrypt config, use Keyring or other OS-level secure storage?
