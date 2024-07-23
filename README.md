@@ -58,6 +58,7 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Write more tests.
 - Implement `Transaction` model to extract some logic from existing classes.
 - Turn into a gem and publish.
+- Handle the Amazon account differently (use account name as payee instead of content?)
 - Implement CLI to setup config.
   - Save/update session_id so browser is only needed once.
 - Improve logging/output.
@@ -68,3 +69,6 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
   - Encrypt config, use Keyring or other OS-level secure storage?
     - Possible to write a gem with native extension based on <https://github.com/hrantzsch/keychain>?
   - Open browser, ask user to log into MoneyForward and store cookie? (Does it expire though?)
+    - Or prompt user from credentials in terminal and fill in form in headless browser
+    - Need to handle case when cookie has expired:
+      > セキュリティ設定	最終利用時間から[30日]後に自動ログアウト
