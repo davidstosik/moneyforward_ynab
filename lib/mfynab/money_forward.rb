@@ -33,9 +33,9 @@ module MFYNAB
       month -= month.day - 1 # First day of month
 
       Net::HTTP.start(base_url.host, use_ssl: true) do |http|
-        3.times do
-          http.response_body_encoding = Encoding::SJIS
+        http.response_body_encoding = Encoding::SJIS
 
+        3.times do
           request = Net::HTTP::Get.new(
             "#{CSV_PATH}?from=#{month.strftime("%Y/%m/%d")}",
             {
