@@ -103,7 +103,7 @@ module MFYNAB
         debt_interest_rates: {},
         debt_minimum_payments: {},
         debt_escrow_amounts: {},
-        deleted: false
+        deleted: false,
       }
     end
 
@@ -130,7 +130,7 @@ module MFYNAB
             group_separator: ",",
             currency_symbol: "¥",
             display_symbol: true,
-          }
+          },
         }
       end
     end

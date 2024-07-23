@@ -30,7 +30,7 @@ module MFYNAB
           date: "2024-07-17",
           cleared: "cleared",
           memo: "transaction content - 食費/食料品",
-          import_id: "MFBY:v1:123abc"
+          import_id: "MFBY:v1:123abc",
         }]
       )
 
