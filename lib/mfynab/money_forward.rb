@@ -21,6 +21,9 @@ module MFYNAB
         browser.at_css("input[name='mfid_user[password]']").focus.type(password)
         browser.at_css("button#submitto").click
 
+        # FIXME: use custom error class
+        raise "Login failed" unless browser.cookies[SESSION_COOKIE_NAME]
+
         browser.cookies[SESSION_COOKIE_NAME].value
       end
     end
