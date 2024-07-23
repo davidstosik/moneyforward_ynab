@@ -4,6 +4,19 @@ require "csv"
 
 module MFYNAB
   class MoneyForwardData
+    HEADERS = {
+      include: "計算対象",
+      date: "日付",
+      content: "内容",
+      amount: "金額（円）",
+      account: "保有金融機関",
+      category: "大項目",
+      subcategory: "中項目",
+      memo: "メモ",
+      transfer: "振替",
+      id: "ID",
+    }
+
     def initialize
       @transactions = {}
     end
@@ -37,18 +50,7 @@ module MFYNAB
 
     def csv_header_converters
       lambda do |header|
-        case header
-        when "計算対象" then "include"
-        when "日付" then "date"
-        when "内容" then "content"
-        when "金額（円）" then "amount"
-        when "保有金融機関" then "account"
-        when "大項目" then "category"
-        when "中項目" then "subcategory"
-        when "メモ" then "memo"
-        when "ID" then "id"
-        else header
-        end
+        HEADERS.key(header)&.to_s || header
       end
     end
   end
