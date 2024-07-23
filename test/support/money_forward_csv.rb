@@ -30,33 +30,33 @@ module MFYNAB
 
     private
 
-    attr_reader :date, :transactions
+      attr_reader :date, :transactions
 
-    def file_name
-      "#{date.strftime('%Y-%m')}.csv"
-    end
+      def file_name
+        "#{date.strftime('%Y-%m')}.csv"
+      end
 
-    def csv_options
-      {
-        force_quotes: true,
-        headers: MoneyForwardData::HEADERS.values,
-        write_headers: true,
-      }
-    end
+      def csv_options
+        {
+          force_quotes: true,
+          headers: MoneyForwardData::HEADERS.values,
+          write_headers: true,
+        }
+      end
 
-    def default_transaction
-      {
-        "計算対象" => "1",
-        "日付" => date.strftime("%Y/%m/%d"),
-        "内容" => "物販 髙島屋",
-        "金額（円）" => "-1000",
-        "保有金融機関" => "モバイルSuica",
-        "大項目" => "未分類",
-        "中項目" => "未分類",
-        "メモ" => "",
-        "振替" => "0",
-        "ID" => "transaction_id",
-      }
-    end
+      def default_transaction
+        {
+          "計算対象" => "1",
+          "日付" => date.strftime("%Y/%m/%d"),
+          "内容" => "物販 髙島屋",
+          "金額（円）" => "-1000",
+          "保有金融機関" => "モバイルSuica",
+          "大項目" => "未分類",
+          "中項目" => "未分類",
+          "メモ" => "",
+          "振替" => "0",
+          "ID" => "transaction_id",
+        }
+      end
   end
 end
