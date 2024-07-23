@@ -80,7 +80,7 @@ module MFYNAB
             "memo" => "",
             "transfer" => 0,
             "id" => "transaction_id",
-          }]
+          }],
         }
 
         assert_equal expected_transactions, data.to_h

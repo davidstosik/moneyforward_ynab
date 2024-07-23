@@ -6,3 +6,6 @@ require:
 
 AllCops:
   NewCops: enable
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
