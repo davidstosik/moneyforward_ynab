@@ -4,6 +4,7 @@ require "test_helper"
 require "csv"
 require "mfynab/money_forward"
 require "support/fake_money_forward_app"
+require "support/money_forward_csv"
 
 module MFYNAB
   class MoneyForwardTest < Minitest::Test
@@ -60,41 +61,8 @@ module MFYNAB
     private
 
     def stub_money_forward_csv_download(date:, transactions: [])
-      headers = [
-        "計算対象",
-        "日付",
-        "内容",
-        "金額（円）",
-        "保有金融機関",
-        "大項目",
-        "中項目",
-        "メモ",
-        "振替",
-        "ID"
-      ]
-
-      if transactions.empty?
-        transactions = [[
-          "1",
-          date.strftime("%Y/%m/%d"),
-          "物販 髙島屋",
-          "-1000",
-          "モバイルSuica",
-          "未分類",
-          "未分類",
-          "",
-          "0",
-          "transaction_id",
-        ]]
-      end
-
-      csv = CSV.generate(force_quotes: true, encoding: Encoding::SJIS) do |csv|
-        csv << headers
-        transactions.each { csv << _1 }
-      end
-
       stub_request(:get, "https://moneyforward.com/cf/csv?from=#{date.strftime("%Y/%m/%d")}")
-        .to_return(body: csv)
+        .to_return(body: MoneyForwardCsv.new(date, transactions).to_downloaded_string)
     end
 
     def first_of_the_month
