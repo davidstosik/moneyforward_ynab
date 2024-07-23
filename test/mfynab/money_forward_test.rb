@@ -34,7 +34,7 @@ module MFYNAB
       end
     end
 
-    def test_download_csv_happy_path
+    def test_download_csv_downloads_csv_by_passing_a_cookie_and_converts_data_to_utf8
       session_id = "dummy_session_id"
       dates = 0.upto(2).map do |i|
         first_of_the_month << i
@@ -50,9 +50,15 @@ module MFYNAB
           path: tmpdir,
         )
 
-        expected_files = dates.map { "#{_1.strftime("%Y-%m")}.csv" }
-        produced_files = Dir[File.join(tmpdir, "*.csv")].map { File.basename(_1) }
-        assert_equal expected_files.sort, produced_files.sort
+        expected_file_names = dates.map { "#{_1.strftime("%Y-%m")}.csv" }
+        produced_files = Dir[File.join(tmpdir, "*.csv")]
+        assert_equal expected_file_names.sort, produced_files.map { File.basename(_1) }.sort
+
+        produced_files.each do |file|
+          content = File.read(file)
+          assert_equal Encoding::UTF_8, content.encoding
+          assert content.valid_encoding?
+        end
       end
 
       expected_requests.each { assert_requested(_1) }
