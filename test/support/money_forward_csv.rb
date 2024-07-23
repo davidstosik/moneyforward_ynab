@@ -11,6 +11,13 @@ module MFYNAB
       end
     end
 
+    def save_to(path)
+      if File.directory?(path)
+        path = File.join(path,  file_name)
+      end
+      File.write(path, to_s)
+    end
+
     def to_downloaded_string
       to_s(encoding: Encoding::SJIS)
     end
@@ -24,6 +31,10 @@ module MFYNAB
     private
 
     attr_reader :date, :transactions
+
+    def file_name
+      "#{date.strftime('%Y-%m')}.csv"
+    end
 
     def csv_options
       {

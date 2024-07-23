@@ -55,7 +55,6 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 
 - Force MoneyForward to sync all accounts before downloading data. (Can take a while.)
 - Use Thor to manage the CLI. (And/or TTY?)
-- Write more tests (`MoneyForwardData`)
 - Implement `Transaction` model to extract some logic from existing classes.
 - Turn into a gem and publish.
 - Handle the Amazon account differently (use account name as payee instead of content?)
