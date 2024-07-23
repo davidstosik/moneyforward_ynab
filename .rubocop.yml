@@ -10,5 +10,8 @@ AllCops:
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
 
+Layout/IndentationConsistency:
+  EnforcedStyle: indented_internal_methods
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma

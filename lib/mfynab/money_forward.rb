@@ -66,21 +66,21 @@ module MFYNAB
 
     private
 
-    attr_reader :base_url
+      attr_reader :base_url
 
-    def with_ferrum(&block)
-      browser = Ferrum::Browser.new(timeout: 30, headless: !ENV.key?("NO_HEADLESS"))
-      browser.headers.add({
-        "Accept-Language" => "en-US,en",
-        "User-Agent" => USER_AGENT,
-      })
-      yield browser
-    rescue => e
-      browser.screenshot(path: "screenshot.png")
-      puts "An error occurred and a screenshot was saved to ./screenshot.png"
-      raise
-    ensure
-      browser&.quit
-    end
+      def with_ferrum(&block)
+        browser = Ferrum::Browser.new(timeout: 30, headless: !ENV.key?("NO_HEADLESS"))
+        browser.headers.add({
+          "Accept-Language" => "en-US,en",
+          "User-Agent" => USER_AGENT,
+        })
+        yield browser
+      rescue => e
+        browser.screenshot(path: "screenshot.png")
+        puts "An error occurred and a screenshot was saved to ./screenshot.png"
+        raise
+      ensure
+        browser&.quit
+      end
   end
 end

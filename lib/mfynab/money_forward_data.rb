@@ -46,12 +46,12 @@ module MFYNAB
 
     private
 
-    attr_reader :transactions
+      attr_reader :transactions
 
-    def csv_header_converters
-      lambda do |header|
-        HEADERS.key(header)&.to_s || header
+      def csv_header_converters
+        lambda do |header|
+          HEADERS.key(header)&.to_s || header
+        end
       end
-    end
   end
 end
