@@ -16,7 +16,7 @@ class CLI
   end
 
   def start
-    puts "Running..."
+    logger.info("Running...")
 
     Dir.mktmpdir("mfynab") do |save_path|
       money_forward.download_csv(
@@ -25,10 +25,12 @@ class CLI
         months: config["months_to_sync"],
       )
 
-      data = MFYNAB::MoneyForwardData.new
+      data = MFYNAB::MoneyForwardData.new(logger: logger)
       data.read_all_csv(save_path)
       ynab_transaction_importer.run(data.to_h)
     end
+
+    logger.info("Done!")
   end
 
   private
@@ -47,11 +49,12 @@ class CLI
         config["ynab_access_token"],
         config["ynab_budget"],
         config["accounts"],
+        logger: logger,
       )
     end
 
     def money_forward
-      @_money_forward ||= MFYNAB::MoneyForward.new
+      @_money_forward ||= MFYNAB::MoneyForward.new(logger: logger)
     end
 
     def config_file
@@ -71,5 +74,17 @@ class CLI
           "moneyforward_username" => ENV.fetch("MONEYFORWARD_USERNAME"),
           "moneyforward_password" => ENV.fetch("MONEYFORWARD_PASSWORD"),
         )
+    end
+
+    def logger
+      @_logger ||= Logger.new($stdout, level: logger_level)
+    end
+
+    def logger_level
+      if ENV.fetch("DEBUG", nil)
+        Logger::DEBUG
+      else
+        Logger::INFO
+      end
     end
 end

@@ -10,7 +10,10 @@ module MFYNAB
   class MoneyForwardTest < Minitest::Test
     def test_get_session_id_raises_if_wrong_credentials
       while_running_fake_money_forward_app do |host, port|
-        money_forward = MoneyForward.new(base_url: "http://#{host}:#{port}")
+        money_forward = MoneyForward.new(
+          base_url: "http://#{host}:#{port}",
+          logger: null_logger,
+        )
 
         assert_raises(RuntimeError, "Login failed") do
           money_forward.get_session_id(
@@ -25,6 +28,7 @@ module MFYNAB
       while_running_fake_money_forward_app do |host, port|
         session_id = MoneyForward.new(
           base_url: "http://#{host}:#{port}",
+          logger: null_logger,
         ).get_session_id(
           username: "david@example.com",
           password: "Passw0rd!",
@@ -45,7 +49,7 @@ module MFYNAB
       end
 
       Dir.mktmpdir do |tmpdir|
-        MoneyForward.new.download_csv(
+        MoneyForward.new(logger: null_logger).download_csv(
           session_id: session_id,
           path: tmpdir,
           months: 3,
@@ -119,6 +123,10 @@ module MFYNAB
         res.is_a?(Net::HTTPSuccess)
       rescue SystemCallError, Net::ReadTimeout, OpenSSL::SSL::SSLError
         false
+      end
+
+      def null_logger
+        Logger.new(File::NULL)
       end
   end
 end

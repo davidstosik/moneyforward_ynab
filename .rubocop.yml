@@ -21,6 +21,11 @@ Metrics/AbcSize:
   Exclude:
     - 'test/**/*_test.rb'
 
+Metrics/ClassLength:
+  Max: 150
+  Exclude:
+    - 'test/**/*_test.rb'
+
 Metrics/MethodLength:
   Max: 20
   Exclude:

@@ -17,8 +17,9 @@ module MFYNAB
       id: "ID",
     }.freeze
 
-    def initialize
+    def initialize(logger:)
       @transactions = {}
+      @logger = logger
     end
 
     def read_all_csv(path)
@@ -28,7 +29,7 @@ module MFYNAB
     end
 
     def read_csv(csv_file)
-      puts "Reading #{csv_file}"
+      logger.info("Reading #{csv_file}")
       CSV.foreach(
         csv_file,
         headers: true,
@@ -46,7 +47,7 @@ module MFYNAB
 
     private
 
-      attr_reader :transactions
+      attr_reader :transactions, :logger
 
       def csv_header_converters
         lambda do |header|

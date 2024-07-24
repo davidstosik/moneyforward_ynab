@@ -24,7 +24,7 @@ module MFYNAB
         csv1.save_to(dir)
         csv2.save_to(dir)
 
-        data = MoneyForwardData.new
+        data = MoneyForwardData.new(logger: null_logger)
         data.read_all_csv(dir)
 
         transactions = data.to_h
@@ -65,7 +65,7 @@ module MFYNAB
       Tempfile.open("mfynabcsv") do |file|
         csv.save_to(file)
 
-        data = MoneyForwardData.new
+        data = MoneyForwardData.new(logger: null_logger)
         data.read_csv(file)
 
         expected_transactions = {
@@ -86,5 +86,11 @@ module MFYNAB
         assert_equal expected_transactions, data.to_h
       end
     end
+
+    private
+
+      def null_logger
+        Logger.new(File::NULL)
+      end
   end
 end

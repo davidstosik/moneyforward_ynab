@@ -11,8 +11,9 @@ module MFYNAB
     USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " \
                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 
-    def initialize(base_url: DEFAULT_BASE_URL)
+    def initialize(logger:, base_url: DEFAULT_BASE_URL)
       @base_url = URI(base_url)
+      @logger = logger
     end
 
     def get_session_id(username:, password:)
@@ -39,7 +40,7 @@ module MFYNAB
         months.times do
           date_string = month.strftime("%Y-%m")
 
-          puts "Downloading CSV for #{date_string}"
+          logger.info("Downloading CSV for #{date_string}")
 
           # FIXME: I don't really need to save the CSV files to disk anymore.
           # Maybe just return parsed CSV data?
@@ -74,7 +75,7 @@ module MFYNAB
 
     private
 
-      attr_reader :base_url
+      attr_reader :base_url, :logger
 
       def with_ferrum
         browser = Ferrum::Browser.new(timeout: 30, headless: !ENV.key?("NO_HEADLESS"))
@@ -85,7 +86,7 @@ module MFYNAB
         yield browser
       rescue StandardError
         browser.screenshot(path: "screenshot.png")
-        puts "An error occurred and a screenshot was saved to ./screenshot.png"
+        logger.error("An error occurred and a screenshot was saved to ./screenshot.png")
         raise
       ensure
         browser&.quit

@@ -4,13 +4,14 @@ require "ynab"
 
 module MFYNAB
   class YnabTransactionImporter
-    def initialize(api_key, budget_name, account_mappings)
+    def initialize(api_key, budget_name, account_mappings, logger:)
       @api_key = api_key
       @budget_name = budget_name
       @account_mappings = account_mappings
+      @logger = logger
     end
 
-    def run(mf_transactions)
+    def run(mf_transactions) # rubocop:disable Metrics/AbcSize
       mf_transactions.map do |mf_account, mf_account_transactions|
         account = ynab_account_for_mf_account(mf_account)
         next unless account
@@ -20,17 +21,17 @@ module MFYNAB
         end
 
         begin
-          puts "Importing #{transactions.size} transactions for #{account.name}"
+          logger.info("Importing #{transactions.size} transactions for #{account.name}")
           ynab_transactions_api.create_transaction(budget.id, transactions: transactions)
         rescue StandardError => e
-          puts "Error importing transactions for #{budget.name}. #{e} : #{e.detail}"
+          logger.error("Error importing transactions for #{budget.name}. #{e} : #{e.detail}")
         end
       end
     end
 
     private
 
-      attr_reader :api_key, :budget_name, :account_mappings
+      attr_reader :api_key, :budget_name, :account_mappings, :logger
 
       def convert_mf_transaction(row, account)
         {
@@ -106,7 +107,7 @@ module MFYNAB
         end
 
         unless matching_mapping
-          puts "Debug: no mapping for MoneyForward account #{mf_account_name}. Skipping..."
+          logger.debug("Debug: no mapping for MoneyForward account #{mf_account_name}. Skipping...")
           return
         end
 

@@ -60,9 +60,6 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Handle the Amazon account differently (use account name as payee instead of content?)
 - Implement CLI to setup config.
   - Save/update session_id so browser is only needed once.
-- Improve logging/output.
-  - Debug logging.
-  - Prevent logging to STDOUT when running tests.
 - Get rid of `envchain`?
   - Store config/credentials in `~/.config/`?
   - Encrypt config, use Keyring or other OS-level secure storage?

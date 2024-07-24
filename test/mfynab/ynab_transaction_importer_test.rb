@@ -26,6 +26,7 @@ module MFYNAB
         "dummy_api_key",
         ynab_budget[:name],
         [{ "money_forward_name" => mf_account_name, "ynab_name" => ynab_account[:name] }],
+        logger: null_logger,
       )
       importer.run({})
 
@@ -50,6 +51,7 @@ module MFYNAB
         "dummy_api_key",
         ynab_budget[:name],
         [],
+        logger: null_logger,
       )
 
       importer.run({ # Should not raise
@@ -97,6 +99,7 @@ module MFYNAB
         "dummy_api_key",
         ynab_budget[:name],
         [{ "money_forward_name" => mf_account_name, "ynab_name" => ynab_account[:name] }],
+        logger: null_logger,
       )
       importer.run({
         mf_account_name => [{
@@ -114,5 +117,11 @@ module MFYNAB
 
       assert_requested(expected_transactions_request)
     end
+
+    private
+
+      def null_logger
+        Logger.new(File::NULL)
+      end
   end
 end
