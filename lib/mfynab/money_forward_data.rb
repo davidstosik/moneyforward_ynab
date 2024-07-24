@@ -15,7 +15,7 @@ module MFYNAB
       memo: "メモ",
       transfer: "振替",
       id: "ID",
-    }
+    }.freeze
 
     def initialize
       @transactions = {}

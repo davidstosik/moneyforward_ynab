@@ -83,7 +83,7 @@ module MFYNAB
           "User-Agent" => USER_AGENT,
         })
         yield browser
-      rescue
+      rescue StandardError
         browser.screenshot(path: "screenshot.png")
         puts "An error occurred and a screenshot was saved to ./screenshot.png"
         raise
