@@ -52,12 +52,14 @@ module MFYNAB
 
         expected_file_names = dates.map { "#{_1.strftime('%Y-%m')}.csv" }
         produced_files = Dir[File.join(tmpdir, "*.csv")]
+
         assert_equal expected_file_names.sort, produced_files.map { File.basename(_1) }.sort
 
         produced_files.each do |file|
           content = File.read(file)
+
           assert_equal Encoding::UTF_8, content.encoding
-          assert content.valid_encoding?
+          assert_predicate(content, :valid_encoding?)
         end
       end
 

@@ -31,6 +31,9 @@ Metrics/ModuleLength:
   Exclude:
     - 'test/**/*_test.rb'
 
+Minitest/MultipleAssertions:
+  Enabled: false
+
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 
