@@ -68,7 +68,7 @@ module MFYNAB
 
       attr_reader :base_url
 
-      def with_ferrum(&block)
+      def with_ferrum
         browser = Ferrum::Browser.new(timeout: 30, headless: !ENV.key?("NO_HEADLESS"))
         browser.headers.add({
           "Accept-Language" => "en-US,en",
