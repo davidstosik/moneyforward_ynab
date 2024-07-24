@@ -13,5 +13,8 @@ Layout/FirstHashElementIndentation:
 Layout/IndentationConsistency:
   EnforcedStyle: indented_internal_methods
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma

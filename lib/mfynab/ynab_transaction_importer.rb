@@ -115,10 +115,10 @@ module MFYNAB
 
       def accounts
         @_accounts ||= YNAB::AccountsApi
-        .new(ynab_api_client)
-        .get_accounts(budget.id)
-        .data
-        .accounts
+          .new(ynab_api_client)
+          .get_accounts(budget.id)
+          .data
+          .accounts
       end
 
       def budget
