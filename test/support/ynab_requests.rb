@@ -8,11 +8,11 @@ module MFYNAB
         accounts << {} if accounts.empty?
 
         accounts_data = accounts.map.with_index do |account, index|
-          ynab_account_defaults.merge(account).tap do |account|
+          ynab_account_defaults.merge(account).tap do |account_with_defaults|
             id_name = "account_#{index}"
-            account[:id] ||= id_name
-            account[:name] ||= id_name
-            account[:transfer_payee_id] ||= "transfer_payee_#{index}"
+            account_with_defaults[:id] ||= id_name
+            account_with_defaults[:name] ||= id_name
+            account_with_defaults[:transfer_payee_id] ||= "transfer_payee_#{index}"
           end
         end
 
@@ -34,10 +34,10 @@ module MFYNAB
         budgets << {} if budgets.empty?
 
         budget_data = budgets.map.with_index do |budget, index|
-          ynab_budget_defaults.merge(budget).tap do |budget|
+          ynab_budget_defaults.merge(budget).tap do |budget_with_defaults|
             id_name = "budget_#{index}"
-            budget[:id] ||= id_name
-            budget[:name] ||= id_name
+            budget_with_defaults[:id] ||= id_name
+            budget_with_defaults[:name] ||= id_name
           end
         end
 
