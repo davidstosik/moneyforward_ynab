@@ -78,10 +78,8 @@ module MFYNAB
       def stub_ynab_request(method, path)
         stub_request(method, "https://api.ynab.com/v1#{path}")
           .with(
-            headers: {
-              #"Authorization" => "Bearer dummy_api_key",
-              "Content-Type" => "application/json",
-            })
+            headers: { "Content-Type" => "application/json" }
+          )
       end
 
       def ynab_account_defaults
