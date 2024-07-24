@@ -11,33 +11,11 @@ module MFYNAB
     end
 
     def run(mf_transactions)
-      # FIXME instead of iterating over all configured accounts,
-      # we should iterate over all accounts that have transactions:
-      #     mf_transactions.map do |mf_account, mf_account_transactions|
-      #       ynab_account_name = account_mappings.find { _1["money_forward_name"] == mf_account }["ynab_name"]
-      #       ynab_account = accounts.find { _1.name.include?(ynab_account_name) }
-      #       # ...
-      #     end
-      account_mappings.each do |mapping|
-        account = accounts.find { _1.name.include?(mapping["ynab_name"]) }
-        unless account
-          puts "Could not find YNAB account for #{mapping["ynab_name"]}"
-          next
-        end
+      mf_transactions.map do |mf_account, mf_account_transactions|
+        account = ynab_account_for_mf_account(mf_account)
 
-        # Skip if no transactions were found for this account
-        next unless mf_transactions.key?(mapping["money_forward_name"])
-
-        transactions = mf_transactions[mapping["money_forward_name"]].map do |row|
-          {
-            account_id: account.id,
-            amount: row["amount"] * 1_000,
-            payee_name: row["content"][0, 100],
-            date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
-            cleared: "cleared",
-            memo: generate_memo_for(row),
-            import_id: generate_import_id_for(row),
-          }
+        transactions = mf_account_transactions.map do |row|
+          convert_mf_transaction(row, account)
         end
 
         begin
@@ -52,6 +30,18 @@ module MFYNAB
     private
 
       attr_reader :api_key, :budget_name, :account_mappings
+
+      def convert_mf_transaction(row, account)
+        {
+          account_id: account.id,
+          amount: row["amount"] * 1_000,
+          payee_name: row["content"][0, 100],
+          date: Date.strptime(row["date"], "%Y/%m/%d").strftime("%Y-%m-%d"),
+          cleared: "cleared",
+          memo: generate_memo_for(row),
+          import_id: generate_import_id_for(row),
+        }
+      end
 
       def generate_memo_for(row)
         category = row
@@ -107,6 +97,22 @@ module MFYNAB
         end
 
         prefix + id
+      end
+
+      def ynab_account_for_mf_account(mf_account_name)
+        matching_mapping = account_mappings.find do |mapping|
+          mapping["money_forward_name"] == mf_account_name
+        end
+        raise "No mapping for MoneyForward account #{mf_account_name}." unless matching_mapping
+
+        ynab_account_name = matching_mapping["ynab_name"]
+
+        ynab_account = accounts.find do |account|
+          account.name.include?(ynab_account_name)
+        end
+        raise "No YNAB account found with name #{ynab_account_name}." unless ynab_account
+
+        ynab_account
       end
 
       def ynab_transactions_api

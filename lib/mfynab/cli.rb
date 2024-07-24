@@ -18,12 +18,6 @@ class CLI
   def start
     puts "Running..."
 
-    money_forward = MFYNAB::MoneyForward.new
-    session_id = money_forward.get_session_id(
-      username: config["moneyforward_username"],
-      password: config["moneyforward_password"],
-    )
-
     Dir.mktmpdir("mfynab") do |save_path|
       money_forward.download_csv(
         session_id: session_id,
@@ -32,19 +26,32 @@ class CLI
 
       data = MFYNAB::MoneyForwardData.new
       data.read_all_csv(save_path)
-      @mf_data = data.to_h
+      ynab_transaction_importer.run(data.to_h)
     end
-
-    MFYNAB::YnabTransactionImporter.new(
-      config["ynab_access_token"],
-      config["ynab_budget"],
-      config["accounts"],
-    ).run(@mf_data)
   end
 
   private
 
     attr_reader :argv
+
+    def session_id
+      @_session_id ||= money_forward.get_session_id(
+        username: config["moneyforward_username"],
+        password: config["moneyforward_password"],
+      )
+    end
+
+    def ynab_transaction_importer
+      @_ynab_transaction_importer ||= MFYNAB::YnabTransactionImporter.new(
+        config["ynab_access_token"],
+        config["ynab_budget"],
+        config["accounts"],
+      )
+    end
+
+    def money_forward
+      @_money_forward ||= MFYNAB::MoneyForward.new
+    end
 
     def config_file
       if argv.empty?

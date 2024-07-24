@@ -116,21 +116,23 @@ module MFYNAB
             last_modified_on: Time.now - 3600,
             first_month: first_month,
             last_month: last_month,
-            date_format: {
-              format: "YYYY-MM-DD",
-            },
-            currency_format: {
-              iso_code: "JPY",
-              example_format: "123,456",
-              decimal_digits: 0,
-              decimal_separator: ".",
-              symbol_first: true,
-              group_separator: ",",
-              currency_symbol: "¥",
-              display_symbol: true,
-            },
+            date_format: { format: "YYYY-MM-DD" },
+            currency_format: jpy_currency_format,
           }
         end
+      end
+
+      def jpy_currency_format
+        {
+          iso_code: "JPY",
+          example_format: "123,456",
+          decimal_digits: 0,
+          decimal_separator: ".",
+          symbol_first: true,
+          group_separator: ",",
+          currency_symbol: "¥",
+          display_symbol: true,
+        }
       end
   end
 end
