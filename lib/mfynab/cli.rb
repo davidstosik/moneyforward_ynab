@@ -67,9 +67,9 @@ class CLI
         .values
         .first
         .merge(
-          "ynab_access_token" => ENV["YNAB_ACCESS_TOKEN"],
-          "moneyforward_username" => ENV["MONEYFORWARD_USERNAME"],
-          "moneyforward_password" => ENV["MONEYFORWARD_PASSWORD"],
+          "ynab_access_token" => ENV.fetch("YNAB_ACCESS_TOKEN"),
+          "moneyforward_username" => ENV.fetch("MONEYFORWARD_USERNAME"),
+          "moneyforward_password" => ENV.fetch("MONEYFORWARD_PASSWORD"),
         )
     end
 end
