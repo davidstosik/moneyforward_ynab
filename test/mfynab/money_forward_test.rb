@@ -50,7 +50,7 @@ module MFYNAB
           path: tmpdir,
         )
 
-        expected_file_names = dates.map { "#{_1.strftime("%Y-%m")}.csv" }
+        expected_file_names = dates.map { "#{_1.strftime('%Y-%m')}.csv" }
         produced_files = Dir[File.join(tmpdir, "*.csv")]
         assert_equal expected_file_names.sort, produced_files.map { File.basename(_1) }.sort
 
@@ -67,7 +67,7 @@ module MFYNAB
     private
 
       def stub_money_forward_csv_download(date:, transactions: [])
-        stub_request(:get, "https://moneyforward.com/cf/csv?from=#{date.strftime("%Y/%m/%d")}")
+        stub_request(:get, "https://moneyforward.com/cf/csv?from=#{date.strftime('%Y/%m/%d')}")
           .to_return(body: MoneyForwardCsv.new(date, transactions).to_downloaded_string)
       end
 
