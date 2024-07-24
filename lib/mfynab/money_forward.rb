@@ -58,7 +58,7 @@ module MFYNAB
         http.response_body_encoding = Encoding::SJIS
 
         request = Net::HTTP::Get.new(
-          "#{CSV_PATH}?from=#{date.strftime("%Y/%m/%d")}",
+          "#{CSV_PATH}?from=#{date.strftime('%Y/%m/%d')}",
           {
             "Cookie" => "#{SESSION_COOKIE_NAME}=#{session_id}",
             "User-Agent" => USER_AGENT,
