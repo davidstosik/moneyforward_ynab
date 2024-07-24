@@ -31,6 +31,9 @@ Metrics/ModuleLength:
   Exclude:
     - 'test/**/*_test.rb'
 
+Naming/MemoizedInstanceVariableName:
+  EnforcedStyleForLeadingUnderscores: required
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
