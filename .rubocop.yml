@@ -16,5 +16,20 @@ Layout/IndentationConsistency:
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
+Metrics/AbcSize:
+  Max: 18
+  Exclude:
+    - 'test/**/*_test.rb'
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'test/**/*_test.rb'
+
+Metrics/ModuleLength:
+  Max: 150
+  Exclude:
+    - 'test/**/*_test.rb'
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma

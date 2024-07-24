@@ -8,7 +8,8 @@ module MFYNAB
     SIGNIN_PATH = "/sign_in"
     CSV_PATH = "/cf/csv"
     SESSION_COOKIE_NAME = "_moneybook_session"
-    USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " \
+                 "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 
     def initialize(base_url: DEFAULT_BASE_URL)
       @base_url = URI(base_url)
@@ -36,31 +37,39 @@ module MFYNAB
         http.response_body_encoding = Encoding::SJIS
 
         3.times do
-          request = Net::HTTP::Get.new(
-            "#{CSV_PATH}?from=#{month.strftime("%Y/%m/%d")}",
-            {
-              "Cookie" => "#{SESSION_COOKIE_NAME}=#{session_id}",
-              "User-Agent" => USER_AGENT,
-            }
-          )
-
           date_string = month.strftime("%Y-%m")
 
           puts "Downloading CSV for #{date_string}"
-
-          result = http.request(request)
-          raise unless result.is_a?(Net::HTTPSuccess)
-          raise unless result.body.valid_encoding?
 
           # FIXME:
           # I don't really need to save the CSV files to disk anymore.
           # Maybe just return parsed CSV data?
           File.open(File.join(path, "#{date_string}.csv"), "wb") do |file|
-            file << result.body.encode(Encoding::UTF_8)
+            file << download_csv_string(date: month, session_id: session_id)
           end
 
           month = month.prev_month
         end
+      end
+    end
+
+    def download_csv_string(date:, session_id:)
+      Net::HTTP.start(base_url.host, use_ssl: true) do |http|
+        http.response_body_encoding = Encoding::SJIS
+
+        request = Net::HTTP::Get.new(
+          "#{CSV_PATH}?from=#{date.strftime("%Y/%m/%d")}",
+          {
+            "Cookie" => "#{SESSION_COOKIE_NAME}=#{session_id}",
+            "User-Agent" => USER_AGENT,
+          }
+        )
+
+        result = http.request(request)
+        raise unless result.is_a?(Net::HTTPSuccess)
+        raise unless result.body.valid_encoding?
+
+        result.body.encode(Encoding::UTF_8)
       end
     end
 
