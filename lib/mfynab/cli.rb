@@ -22,6 +22,7 @@ class CLI
       money_forward.download_csv(
         session_id: session_id,
         path: save_path,
+        months: config["months_to_sync"],
       )
 
       data = MFYNAB::MoneyForwardData.new
@@ -54,9 +55,7 @@ class CLI
     end
 
     def config_file
-      if argv.empty?
-        raise "You need to pass a config file"
-      end
+      raise "You need to pass a config file" if argv.empty?
 
       argv[0]
     end
@@ -67,6 +66,7 @@ class CLI
         .values
         .first
         .merge(
+          "months_to_sync" => 3,
           "ynab_access_token" => ENV.fetch("YNAB_ACCESS_TOKEN"),
           "moneyforward_username" => ENV.fetch("MONEYFORWARD_USERNAME"),
           "moneyforward_password" => ENV.fetch("MONEYFORWARD_PASSWORD"),

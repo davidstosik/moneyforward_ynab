@@ -48,6 +48,7 @@ module MFYNAB
         MoneyForward.new.download_csv(
           session_id: session_id,
           path: tmpdir,
+          months: 3,
         )
 
         expected_file_names = dates.map { "#{_1.strftime('%Y-%m')}.csv" }

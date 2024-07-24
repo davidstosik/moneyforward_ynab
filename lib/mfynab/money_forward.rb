@@ -29,14 +29,14 @@ module MFYNAB
       end
     end
 
-    def download_csv(session_id:, path:)
+    def download_csv(session_id:, path:, months:)
       month = Date.today
       month -= month.day - 1 # First day of month
 
       Net::HTTP.start(base_url.host, use_ssl: true) do |http|
         http.response_body_encoding = Encoding::SJIS
 
-        3.times do
+        months.times do
           date_string = month.strftime("%Y-%m")
 
           puts "Downloading CSV for #{date_string}"

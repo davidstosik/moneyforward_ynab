@@ -1,5 +1,6 @@
 David:
   ynab_budget: "My budget"
+  months_to_sync: 3
   accounts:
     - money_forward_name: "楽天銀行"
       ynab_name: "Rakuten Bank"
