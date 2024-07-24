@@ -34,6 +34,9 @@ Metrics/ModuleLength:
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 

@@ -30,7 +30,7 @@ module MFYNAB
         transactions = data.to_h
 
         assert_equal ["account 1", "account 2"], transactions.keys.sort
-        transactions.values.each do |account_transactions|
+        transactions.each_value do |account_transactions|
           assert_equal 1, account_transactions.size
         end
 
