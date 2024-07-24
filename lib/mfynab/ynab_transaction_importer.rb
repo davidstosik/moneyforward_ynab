@@ -13,6 +13,7 @@ module MFYNAB
     def run(mf_transactions)
       mf_transactions.map do |mf_account, mf_account_transactions|
         account = ynab_account_for_mf_account(mf_account)
+        next unless account
 
         transactions = mf_account_transactions.map do |row|
           convert_mf_transaction(row, account)
@@ -103,7 +104,11 @@ module MFYNAB
         matching_mapping = account_mappings.find do |mapping|
           mapping["money_forward_name"] == mf_account_name
         end
-        raise "No mapping for MoneyForward account #{mf_account_name}." unless matching_mapping
+
+        unless matching_mapping
+          puts "Debug: no mapping for MoneyForward account #{mf_account_name}. Skipping..."
+          return
+        end
 
         ynab_account_name = matching_mapping["ynab_name"]
 

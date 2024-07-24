@@ -20,6 +20,7 @@ module MFYNAB
       }
       stub_ynab_budgets([ynab_budget])
       stub_ynab_accounts(ynab_budget[:id], [ynab_account])
+      transactions_stub = stub_ynab_request(:post, "/budgets/#{ynab_budget[:id]}/transactions")
 
       importer = YnabTransactionImporter.new(
         "dummy_api_key",
@@ -28,9 +29,42 @@ module MFYNAB
       )
       importer.run({})
 
-      transactions_stub = stub_ynab_request(:post, "/budgets/#{ynab_budget[:id]}/transactions")
-
       assert_not_requested(transactions_stub)
+    end
+
+    def test_when_money_forward_account_not_mapped
+      mf_account_name = "MF Account"
+      ynab_budget = {
+        id: "budget_id",
+        name: "My Budget",
+      }
+      ynab_account = {
+        id: "ynab_account",
+        name: "YNAB Account",
+      }
+      stub_ynab_budgets([ynab_budget])
+      stub_ynab_accounts(ynab_budget[:id], [ynab_account])
+      stub_ynab_request(:post, "/budgets/#{ynab_budget[:id]}/transactions")
+
+      importer = YnabTransactionImporter.new(
+        "dummy_api_key",
+        ynab_budget[:name],
+        [],
+      )
+
+      importer.run({ # Should not raise
+        mf_account_name => [{
+          "include" => "1",
+          "date" => "2024/07/17",
+          "content" => "transaction content",
+          "amount" => 77,
+          "account" => mf_account_name,
+          "category" => "食費",
+          "subcategory" => "食料品",
+          "memo" => "",
+          "id" => "123abc",
+        }],
+      })
     end
 
     def test_happy_path
