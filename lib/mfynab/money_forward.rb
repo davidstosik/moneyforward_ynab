@@ -41,8 +41,7 @@ module MFYNAB
 
           puts "Downloading CSV for #{date_string}"
 
-          # FIXME:
-          # I don't really need to save the CSV files to disk anymore.
+          # FIXME: I don't really need to save the CSV files to disk anymore.
           # Maybe just return parsed CSV data?
           File.open(File.join(path, "#{date_string}.csv"), "wb") do |file|
             file << download_csv_string(date: month, session_id: session_id)
