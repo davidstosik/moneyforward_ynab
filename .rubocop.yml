@@ -31,5 +31,8 @@ Metrics/ModuleLength:
   Exclude:
     - 'test/**/*_test.rb'
 
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
