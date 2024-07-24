@@ -24,7 +24,7 @@ module MFYNAB
       importer = YnabTransactionImporter.new(
         "dummy_api_key",
         ynab_budget[:name],
-        [{ "money_forward_name" => mf_account_name, "ynab_name" => ynab_account[:name] }]
+        [{ "money_forward_name" => mf_account_name, "ynab_name" => ynab_account[:name] }],
       )
       importer.run({})
 
@@ -56,13 +56,13 @@ module MFYNAB
           cleared: "cleared",
           memo: "transaction content - 食費/食料品",
           import_id: "MFBY:v1:123abc",
-        }]
+        }],
       )
 
       importer = YnabTransactionImporter.new(
         "dummy_api_key",
         ynab_budget[:name],
-        [{ "money_forward_name" => mf_account_name, "ynab_name" => ynab_account[:name] }]
+        [{ "money_forward_name" => mf_account_name, "ynab_name" => ynab_account[:name] }],
       )
       importer.run({
         mf_account_name => [{

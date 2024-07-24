@@ -11,14 +11,14 @@ module MFYNAB
         [{
           "保有金融機関" => "account 1",
           "ID" => "transaction_id_1",
-        }]
+        }],
       )
       csv2 = MoneyForwardCsv.new(
         Date.new(2024, 6, 1),
         [{
           "保有金融機関" => "account 2",
           "ID" => "transaction_id_2",
-        }]
+        }],
       )
       Dir.mktmpdir do |dir|
         csv1.save_to(dir)
@@ -36,12 +36,12 @@ module MFYNAB
 
         assert_equal(
           ["account 1", "transaction_id_1"],
-          transactions["account 1"].first.values_at("account", "id")
+          transactions["account 1"].first.values_at("account", "id"),
         )
 
         assert_equal(
           ["account 2", "transaction_id_2"],
-          transactions["account 2"].first.values_at("account", "id")
+          transactions["account 2"].first.values_at("account", "id"),
         )
       end
     end
@@ -60,7 +60,7 @@ module MFYNAB
           "メモ" => "",
           "振替" => "0",
           "ID" => "transaction_id",
-        }]
+        }],
       )
       Tempfile.open("mfynabcsv") do |file|
         csv.save_to(file)
