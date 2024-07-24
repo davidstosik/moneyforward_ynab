@@ -89,7 +89,7 @@ module MFYNAB
             Host: host,
             Port: port,
             AccessLog: [],
-            Logger: WEBrick::Log.new(nil, 0)
+            Logger: WEBrick::Log.new(nil, 0),
           )
         end
 

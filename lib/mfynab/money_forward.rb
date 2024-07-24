@@ -62,7 +62,7 @@ module MFYNAB
           {
             "Cookie" => "#{SESSION_COOKIE_NAME}=#{session_id}",
             "User-Agent" => USER_AGENT,
-          }
+          },
         )
 
         result = http.request(request)
