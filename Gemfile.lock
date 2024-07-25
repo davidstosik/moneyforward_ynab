@@ -114,17 +114,17 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  debug
+  debug (~> 1.9)
   mfynab!
-  minitest
-  rackup
-  rake
-  rubocop
-  rubocop-minitest
-  rubocop-rake
-  sinatra
-  webmock
-  webrick
+  minitest (~> 5.24)
+  rackup (~> 2.1)
+  rake (~> 13.2)
+  rubocop (~> 1.65)
+  rubocop-minitest (~> 0.35)
+  rubocop-rake (~> 0.6)
+  sinatra (~> 4.0)
+  webmock (~> 3.23)
+  webrick (~> 1.8)
 
 BUNDLED WITH
    2.4.6
