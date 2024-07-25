@@ -2,8 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "ferrum"
-gem "ynab"
+gemspec
 
 # Dev dependencies
 gem "debug"
