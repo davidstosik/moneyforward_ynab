@@ -1,3 +1,10 @@
+PATH
+  remote: .
+  specs:
+    mfynab (0.1.0)
+      ferrum (~> 0.15)
+      ynab (~> 3.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -108,7 +115,7 @@ PLATFORMS
 
 DEPENDENCIES
   debug
-  ferrum
+  mfynab!
   minitest
   rackup
   rake
@@ -118,7 +125,6 @@ DEPENDENCIES
   sinatra
   webmock
   webrick
-  ynab
 
 BUNDLED WITH
    2.4.6
