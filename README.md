@@ -15,14 +15,14 @@ it to YNAB.
 
 ## Setup
 
-You'll need Ruby and Bundler.
+You'll need Ruby 3.3.0 or above.
 
 ```sh
-# Install dependencies
-bundle install
+# Install gem
+gem install mfynab
 
 # Start a config YAML file
-cp config/example.yml config/david.yml
+wget https://raw.githubusercontent.com/davidstosik/moneyforward_ynab/main/config/example.yml -O mfynab-david.yml
 ```
 
 The script currently looks for credentials in environment variables:
@@ -35,7 +35,7 @@ You can for example use [envchain](https://github.com/sorah/envchain) to manage
 those credentials:
 
 ```sh
-envchain --set --noecho mfynab MONEYFORWARD_USERNAME MONEYFORWARD_PASSWORD YNAB_ACCESS_TOKEN
+envchain --set --noecho mfynab_david MONEYFORWARD_USERNAME MONEYFORWARD_PASSWORD YNAB_ACCESS_TOKEN
 ```
 
 ## Running
@@ -44,7 +44,7 @@ To run, you'll simply need to set the environment variables.
 Using `envchain`, that'll look like this:
 
 ```sh
-envchain mfynab bin/mfynab config/david.yml
+envchain mfynab_david mfynab mfynab-david.yml
 ```
 
 ## Development
@@ -56,10 +56,10 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Force MoneyForward to sync all accounts before downloading data. (Can take a while.)
 - Use Thor to manage the CLI. (And/or TTY?)
 - Implement `Transaction` model to extract some logic from existing classes.
-- Turn into a gem and publish.
 - Handle the Amazon account differently (use account name as payee instead of content?)
 - Implement CLI to setup config.
   - Save/update session_id so browser is only needed once.
+- Generate new configuration file with the command line.
 - Get rid of `envchain`?
   - Store config/credentials in `~/.config/`?
   - Encrypt config, use Keyring or other OS-level secure storage?
