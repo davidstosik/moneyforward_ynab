@@ -3,6 +3,7 @@ PATH
   specs:
     mfynab (0.1.1)
       ferrum (~> 0.15)
+      psych (~> 5.1)
       ynab (~> 3.4)
 
 GEM
