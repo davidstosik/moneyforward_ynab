@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "debug"
 require "yaml"
 require "mfynab/money_forward"
 require "mfynab/money_forward_data"
