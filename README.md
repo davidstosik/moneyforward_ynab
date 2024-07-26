@@ -63,7 +63,7 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Get rid of `envchain`?
   - Store config/credentials in `~/.config/`?
   - Encrypt config, use Keyring or other OS-level secure storage?
-    - Possible to write a gem with native extension based on <https://github.com/hrantzsch/keychain>?
+    - Possible to write a gem with native extension based on <https://github.com/hrantzsch/keychain>? (or <https://github.com/hwchen/keyring-rs>?)
   - Open browser, ask user to log into MoneyForward and store cookie? (Does it expire though?)
     - Or prompt user from credentials in terminal and fill in form in headless browser
     - Need to handle case when cookie has expired:
