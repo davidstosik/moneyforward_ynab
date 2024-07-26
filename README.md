@@ -5,13 +5,14 @@ it to YNAB.
 
 ## Principle
 
-- Use [Capybara](https://github.com/teamcapybara/capybara) with the [Cuprite](https://github.com/rubycdp/cuprite)
-  driver to log into the Money Forward website and download transaction history
-  CSV files.
-- Parse the CSV files and converts the data to a format that works with YNAB.
+- Use [Ferrum](https://github.com/rubycdp/ferrum) to browse to the Money Forward
+  website, log in and save a session cookie.
+- Craft HTTP requests to Money Forward including the session cookie above to
+  retrieve transactions in CSV files.
+- Parse the CSV files and convert the data to a format that works with YNAB.
 - Use [YNAB API Ruby library](https://github.com/ynab/ynab-sdk-ruby) to post
   transactions to your YNAB budget.
-- Budget and account mappings are set in a configuration file (`config.yml`).
+- Budget and account mappings are set in a configuration file (see `config/example.yml`).
 
 ## Setup
 
