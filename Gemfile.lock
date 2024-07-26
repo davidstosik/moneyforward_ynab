@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mfynab (0.1.1)
+    mfynab (0.1.2)
       ferrum (~> 0.15)
       psych (~> 5.1)
       ynab (~> 3.4)
