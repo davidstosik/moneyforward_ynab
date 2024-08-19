@@ -70,4 +70,3 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
     - Or prompt user from credentials in terminal and fill in form in headless browser
     - Need to handle case when cookie has expired:
       > セキュリティ設定	最終利用時間から[30日]後に自動ログアウト
-- Log how many transactions were duplicates after import

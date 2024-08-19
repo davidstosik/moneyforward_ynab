@@ -22,7 +22,12 @@ module MFYNAB
 
         begin
           logger.info("Importing #{transactions.size} transactions for #{account.name}")
-          ynab_transactions_api.create_transaction(budget.id, transactions: transactions)
+          result = ynab_transactions_api.create_transaction(budget.id, transactions: transactions)
+          logger.info(
+            "Imported #{result.data.transactions.size} transactions " \
+            "for #{account.name} " \
+            "(#{result.data.duplicate_import_ids.size} duplicates)",
+          )
         rescue StandardError => e
           logger.error("Error importing transactions for #{budget.name}. #{e} : #{e.detail}")
         end
