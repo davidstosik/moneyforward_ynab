@@ -21,7 +21,7 @@ class CLI
       money_forward.download_csv(
         session_id: session_id,
         path: save_path,
-        months: config["months_to_sync"],
+        months: months_to_sync,
       )
 
       data = MFYNAB::MoneyForwardData.new(logger: logger)
@@ -52,6 +52,10 @@ class CLI
       )
     end
 
+    def months_to_sync
+      config.fetch("months_to_sync", 3)
+    end
+
     def money_forward
       @_money_forward ||= MFYNAB::MoneyForward.new(logger: logger)
     end
@@ -68,7 +72,6 @@ class CLI
         .values
         .first
         .merge(
-          "months_to_sync" => 3,
           "ynab_access_token" => ENV.fetch("YNAB_ACCESS_TOKEN"),
           "moneyforward_username" => ENV.fetch("MONEYFORWARD_USERNAME"),
           "moneyforward_password" => ENV.fetch("MONEYFORWARD_PASSWORD"),
