@@ -6,7 +6,7 @@ gemspec
 
 # Dev dependencies
 gem "debug", "~> 1.9"
-gem "minitest", "~> 5.24"
+gem "minitest", "~> 5.25"
 gem "rackup", "~> 2.1"
 gem "rake", "~> 13.2"
 gem "rubocop", "~> 1.65"
