@@ -61,6 +61,7 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 - Implement CLI to setup config.
   - Save/update session_id so browser is only needed once.
 - Generate new configuration file with the command line.
+- Make reusable fixtures instead of setting up every test
 - Get rid of `envchain`?
   - Store config/credentials in `~/.config/`?
   - Encrypt config, use Keyring or other OS-level secure storage?
@@ -69,3 +70,4 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
     - Or prompt user from credentials in terminal and fill in form in headless browser
     - Need to handle case when cookie has expired:
       > セキュリティ設定	最終利用時間から[30日]後に自動ログアウト
+- Log how many transactions were duplicates after import
