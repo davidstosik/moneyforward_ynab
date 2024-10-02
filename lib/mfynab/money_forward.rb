@@ -66,8 +66,8 @@ module MFYNAB
         )
 
         result = http.request(request)
-        raise unless result.is_a?(Net::HTTPSuccess)
-        raise unless result.body.valid_encoding?
+        raise "Got unexpected result: #{result.inspect}" unless result.is_a?(Net::HTTPSuccess)
+        raise "Invalid encoding" unless result.body.valid_encoding?
 
         result.body.encode(Encoding::UTF_8)
       end
