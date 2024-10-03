@@ -33,23 +33,18 @@ module MFYNAB
     def download_csv(session_id:, path:, months:)
       month = Date.today
       month -= month.day - 1 # First day of month
+      months.times do
+        date_string = month.strftime("%Y-%m")
 
-      Net::HTTP.start(base_url.host, use_ssl: true) do |http|
-        http.response_body_encoding = Encoding::SJIS
+        logger.info("Downloading CSV for #{date_string}")
 
-        months.times do
-          date_string = month.strftime("%Y-%m")
-
-          logger.info("Downloading CSV for #{date_string}")
-
-          # FIXME: I don't really need to save the CSV files to disk anymore.
-          # Maybe just return parsed CSV data?
-          File.open(File.join(path, "#{date_string}.csv"), "wb") do |file|
-            file << download_csv_string(date: month, session_id: session_id)
-          end
-
-          month = month.prev_month
+        # FIXME: I don't really need to save the CSV files to disk anymore.
+        # Maybe just return parsed CSV data?
+        File.open(File.join(path, "#{date_string}.csv"), "wb") do |file|
+          file << download_csv_string(date: month, session_id: session_id)
         end
+
+        month = month.prev_month
       end
     end
 
